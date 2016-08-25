@@ -18,7 +18,12 @@ from crossdomain import crossdomain
 
 from string import Template
 
+from google.protobuf import timestamp_pb2
+from gcloud import storage
+
 app = Flask(__name__)
+
+DATASET_BUCKET = 'datasets-hf'
 
 DEFAULT_CONTENT_TEMPLATE = Template("\n".join([
     "           <p>Predicci&oacute;n: ${pred}</p>",
@@ -66,6 +71,13 @@ def estimate_prognosis_weight_vector(cell, malignants, c_min=2, c_max=20, metric
 
     return weights
 
+
+# Descargamos el dataset de cancer del bucket de datasets
+client = storage.Client()
+cblob = client.get_bucket(DATASET_BUCKET).get_blob('breast-cancer-wisconsin.data_total.txt')
+fp = open('breast-cancer-wisconsin.data_total.txt','wb')
+cblob.download_to_file(fp)
+fp.close()
 
 # Cargamos los datos y aplicamos alguna transformacion
 df = pd.read_csv('breast-cancer-wisconsin.data_total.txt')
