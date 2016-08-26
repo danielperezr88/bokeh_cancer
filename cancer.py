@@ -2,7 +2,7 @@ from bokeh.plotting import curdoc, figure
 from bokeh.layouts import gridplot
 from bokeh.models.widgets import Slider
 from bokeh.models.callbacks import CustomJS
-from bokeh.models import ColumnDataSource, WidgetBox, Div, Column, Spacer
+from bokeh.models import ColumnDataSource, WidgetBox, Div, Column
 
 import requests as req
 
@@ -24,9 +24,6 @@ static_source = ColumnDataSource(data=default_data['results'])
 
 callback = CustomJS(args=dict(ss=static_source), code="""
 
-    var inputs = $('div .bk-slider-parent').find('input');
-    inputs = $.map(inputs, function(a){return $(a).val()});
-
     function update_plot(data){
         ss.data = data['results'];
         ss.trigger('change');
@@ -38,6 +35,10 @@ callback = CustomJS(args=dict(ss=static_source), code="""
 
     clearTimeout(timer)
     timer = window.setTimeout(function(){
+
+        var inputs = $('div .bk-slider-parent').find('input');
+        inputs = $.map(inputs, function(a){return $(a).val()});
+
         $.ajax({
             url: 'http://localhost:50002/compute/[' + inputs + ']',
             type: 'POST',
@@ -51,6 +52,7 @@ callback = CustomJS(args=dict(ss=static_source), code="""
             contentType: 'application/json',
             success: update_text
         });
+
     }, 2000);
 
 """)
@@ -76,9 +78,8 @@ text = Column(children=[
     plot,
     Div(text=DIV_TEMPLATE.substitute(**dict(content=def_cont['results'])), sizing_mode='scale_both')
 ], width=65)
-spacer = Spacer(width=5)
 
-curdoc().add_root(gridplot([[text, spacer, sliders]], responsive=True))
+curdoc().add_root(gridplot([[text, sliders]], responsive=True))
 #curdoc().add_root(gridplot([[script, plot, sliders]], responsive=True))
 
 curdoc().add_next_tick_callback(redraw)

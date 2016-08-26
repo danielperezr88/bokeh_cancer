@@ -133,7 +133,8 @@ base = dict(x=np.hstack((xx1, xx2)), y=np.hstack((yy1, yy2)), color=['blue'] * x
 @crossdomain(origin='*', methods=['POST', 'OPTIONS'], headers=None)
 def predict(chars):
 
-    chars = json.loads(chars) if not isinstance(chars, str) else np.amin(X, axis=0)
+    chars = json.loads(chars)
+    chars = np.amin(X, axis=0) if isinstance(chars, str) else chars
     aux = ""
 
     try:
