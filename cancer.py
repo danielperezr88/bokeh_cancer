@@ -96,6 +96,5 @@ text = Column(children=[
 ], width=65)
 
 curdoc().add_root(gridplot([[text, sliders]], responsive=True))
-#curdoc().add_root(gridplot([[script, plot, sliders]], responsive=True))
 
 curdoc().add_next_tick_callback(redraw)
