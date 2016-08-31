@@ -172,10 +172,10 @@ def compute(chars):
 
     try:
 
-        chars = pca.transform(chars)
+        chars = pca.transform(chars)[0]
 
         aux['x'] = np.hstack((base['x'], chars[0])).tolist()
-        aux['y'] = np.hstack((base['y'], chars[0])).tolist()
+        aux['y'] = np.hstack((base['y'], chars[1])).tolist()
         #aux['z'] = np.hstack((base['z'], chars[0])).tolist()
         aux['color'] = base['color'] + ['green']
 
@@ -192,10 +192,10 @@ def defaults():
 
     try:
 
-        chars = pca.transform(np.amin(X, axis=0))
+        chars = pca.transform(np.amin(X, axis=0))[0]
 
         aux['x'] = np.hstack((base['x'], chars[0])).tolist()
-        aux['y'] = np.hstack((base['y'], chars[0])).tolist()
+        aux['y'] = np.hstack((base['y'], chars[1])).tolist()
         #aux['z'] = np.hstack((base['z'], chars[0])).tolist()
         aux['color'] = base['color'] + ['green']# + ["rgba(0,255,0,1)"]
 
