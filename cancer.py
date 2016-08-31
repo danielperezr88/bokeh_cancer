@@ -18,7 +18,7 @@ def generate_url(host, protocol='http', port=80, dir=''):
 
 #MYIP = '127.0.0.1'
 MYIP = req.get(generate_url('jsonip.com')).json()['ip']
-server_port = 50002
+server_port = 50000
 
 DIV_TEMPLATE = Template("\n".join([
     "<div class=\"outer\" style=\"display:table; position:absolute; height:100%; width:100%;\">",
