@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from os import path
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.cross_validation import KFold
@@ -19,12 +20,12 @@ from crossdomain import crossdomain
 from string import Template
 import regex as re
 
-from google.protobuf import timestamp_pb2
-from gcloud import storage
+from utils import BucketedFileRefresher
 
 app = Flask(__name__)
 
-DATASET_BUCKET = 'datasets-hf'
+DATASET_BUCKET = 'datasets'
+BFR = BucketedFileRefresher()
 
 DEFAULT_CONTENT_TEMPLATE = Template("\n".join([
     "           <p>Predicci&oacute;n: ${pred}</p>",
@@ -74,14 +75,12 @@ def estimate_prognosis_weight_vector(cell, malignants, c_min=2, c_max=20, metric
 
 
 # Descargamos el dataset de cancer del bucket de datasets
-client = storage.Client()
-cblob = client.get_bucket(DATASET_BUCKET).get_blob('breast-cancer-wisconsin.data_total.txt')
-fp = open('breast-cancer-wisconsin.data_total.txt','wb')
-cblob.download_to_file(fp)
-fp.close()
+filename = 'breast-cancer-wisconsin.data_total.txt'
+filepath = path.join(path.dirname(path.realpath(__file__)), filename)
+BFR(DATASET_BUCKET, filename, filepath)
 
 # Cargamos los datos y aplicamos alguna transformacion
-df = pd.read_csv('breast-cancer-wisconsin.data_total.txt')
+df = pd.read_csv(filename)
 labels = {'benign': 2, 'malignant': 4}
 
 df.drop(['id'], 1, inplace=True)

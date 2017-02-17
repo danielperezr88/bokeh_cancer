@@ -2,16 +2,29 @@ FROM danielperezr88/bokeh-python3:latest
 
 MAINTAINER danielperezr88 <danielperezr88@gmail.com>
 
-RUN apt-get update && apt-get install -y supervisor
+RUN apt-get update && apt-get install -y \
+    supervisor \
+    git
 RUN mkdir -p /var/log/supervisor
 
+# Force pip2 installation and creation
+RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
+	&& pip2 install --no-cache-dir --upgrade pip==$PYTHON_PIP_VERSION \
+	&& cd / \
+	&& curl -fSL "https://gist.githubusercontent.com/danielperezr88/c3b7eb74c30d854f6db4b978a2f34582/raw/416a99ebddf210cf6f44173e79faeef98bfeb15d/pip_shebang_patch.txt" \
+			-o /pip_shebang_patch.txt \
+	&& patch -p1 < pip_shebang_patch.txt
+
+RUN pip2 install supervisor && \
+    pip2 install superlance==1.0.0
+
 # Download bokeh_cancer
-RUN curl -fSL "https://github.com/danielperezr88/bokeh_cancer/archive/v1.3.tar.gz" -o bokeh_cancer.tar.gz && \
+RUN curl -fSL "https://github.com/danielperezr88/bokeh_cancer/archive/v1.4.tar.gz" -o bokeh_cancer.tar.gz && \
 	tar -xf bokeh_cancer.tar.gz -C . && \
 	mkdir /app && \
-	mv bokeh_cancer-1.3/* /app/ && \
+	mv bokeh_cancer-1.4/* /app/ && \
 	rm bokeh_cancer.tar.gz && \
-	rm -rf bokeh_cancer-1.3 && \
+	rm -rf bokeh_cancer-1.4 && \
 	cp /app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 	
 # Copy apache config files
