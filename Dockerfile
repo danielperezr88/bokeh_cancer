@@ -19,13 +19,14 @@ RUN pip2 install supervisor && \
     pip2 install superlance==1.0.0
 
 # Download bokeh_cancer
-RUN curl -fSL "https://github.com/danielperezr88/bokeh_cancer/archive/v1.4.tar.gz" -o bokeh_cancer.tar.gz && \
+RUN curl -fSL "https://github.com/danielperezr88/bokeh_cancer/archive/v1.5.tar.gz" -o bokeh_cancer.tar.gz && \
 	tar -xf bokeh_cancer.tar.gz -C . && \
 	mkdir /app && \
-	mv bokeh_cancer-1.4/* /app/ && \
+	mv bokeh_cancer-1.5/* /app/ && \
 	rm bokeh_cancer.tar.gz && \
-	rm -rf bokeh_cancer-1.4 && \
-	cp /app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+	rm -rf bokeh_cancer-1.5 && \
+	cp /app/supervisord.conf /etc/supervisor/conf.d/supervisord.conf && \
+	rm /app/supervisord.conf
 	
 # Copy apache config files
 RUN cp /app/apache-proxy-conf-files/000-default.conf /etc/apache2/sites-available/000-default.conf && \
@@ -40,5 +41,7 @@ RUN curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh -o inst
 	echo "07ca6e522885b9696013aaddde48bf2675429e57081c70080a9a1364a411b395  install-logging-agent.sh" | sha256sum -c -
 
 EXPOSE 5006
+
+WORKDIR /app
 
 CMD ["/usr/bin/supervisord"]
