@@ -1,2 +1,3 @@
 .idea/
 breast-cancer-wisconsin.data_total.txt
+__pycache__/

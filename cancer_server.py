@@ -209,4 +209,4 @@ def fields():
     return json.jsonify({'results': flds})
 
 if __name__ == '__main__':
-    app.run(port=50002)
+    app.run(port=50000)
